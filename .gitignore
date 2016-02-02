@@ -1,8 +1,9 @@
 .svn
 *~
-clang.egg-info/
+sealang.egg-info/
 dist/
 build/
 *.pyc
 .tox
 .eggs
+*.so

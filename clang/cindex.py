@@ -1319,6 +1319,45 @@ class Cursor(Structure):
         return StorageClass.from_id(self._storage_class)
 
     @property
+    def literal(self):
+        """
+        Retrieves the literal at this cursor
+        """
+        if not hasattr(self, '_literal'):
+            self._literal = conf.sealang.clang_Cursor_getLiteralString(self).decode('utf-8')
+
+        return self._literal
+
+    @property
+    def operator(self):
+        """Retrieve the spelling of this TypeKind."""
+        if not hasattr(self, '_operator'):
+            self._operator = conf.sealang.clang_Cursor_getOperatorString(self).decode('utf-8')
+
+        return self._operator
+
+    @property
+    def unary_operator(self):
+        """
+        Retrieves the opcode if this cursor points to a binary operator
+        """
+        if not hasattr(self, '_unaryopcode'):
+            self._unaryopcode = conf.sealang.clang_Cursor_getUnaryOpcode(self)
+
+        return UnaryOperator.from_id(self._unaryopcode)
+
+    @property
+    def binary_operator(self):
+        """
+        Retrieves the opcode if this cursor points to a binary operator
+        """
+
+        if not hasattr(self, '_binopcode'):
+            self._binopcode = conf.sealang.clang_Cursor_getBinaryOpcode(self)
+
+        return BinaryOperator.from_id(self._binopcode)
+
+    @property
     def access_specifier(self):
         """
         Retrieves the access specifier (if any) of the entity pointed at by the
@@ -1645,6 +1684,113 @@ StorageClass.PRIVATEEXTERN = StorageClass(4)
 StorageClass.OPENCLWORKGROUPLOCAL = StorageClass(5)
 StorageClass.AUTO = StorageClass(6)
 StorageClass.REGISTER = StorageClass(7)
+
+
+class UnaryOperator(BaseEnumeration):
+    """
+    Describes the UnaryOperator of a declaration
+    """
+
+    # The unique kind objects, index by id.
+    _kinds = []
+    _name_map = None
+
+    def __nonzero__(self):
+        """ Allows checks of the kind ```if cursor.binary_operator:```"""
+        return self.value != 0
+
+    @property
+    def is_postfix(self):
+        return self.value in (
+            UnaryOperator.POSTINC.value,
+            UnaryOperator.POSTDEC.value,
+        )
+
+    @property
+    def is_prefix(self):
+        return self.value not in (
+            UnaryOperator.INVALID,
+            UnaryOperator.POSTINC.value,
+            UnaryOperator.POSTDEC.value,
+            UnaryOperator.UNKNOWN
+        )
+
+    def __repr__(self):
+        return 'UnaryOperator.%s' % (self.name,)
+
+
+UnaryOperator.INVALID = UnaryOperator(0)
+UnaryOperator.POSTINC = UnaryOperator(1)
+UnaryOperator.POSTDEC = UnaryOperator(2)
+UnaryOperator.PREINC = UnaryOperator(3)
+UnaryOperator.PREDEC = UnaryOperator(4)
+UnaryOperator.ADDROF = UnaryOperator(5)
+UnaryOperator.DEREF = UnaryOperator(6)
+UnaryOperator.PLUS = UnaryOperator(7)
+UnaryOperator.MINUS = UnaryOperator(8)
+UnaryOperator.NOT = UnaryOperator(9)
+UnaryOperator.LNOT = UnaryOperator(10)
+UnaryOperator.REAL = UnaryOperator(11)
+UnaryOperator.IMAG = UnaryOperator(12)
+UnaryOperator.EXTENSION = UnaryOperator(13)
+UnaryOperator.UNKNOWN = UnaryOperator(14)
+
+
+class BinaryOperator(BaseEnumeration):
+    """
+    Describes the BinaryOperator of a declaration
+    """
+
+    # The unique kind objects, index by id.
+    _kinds = []
+    _name_map = None
+
+    def __nonzero__(self):
+        """ Allows checks of the kind ```if cursor.binary_operator:```"""
+        return self.value != 0
+
+    @property
+    def is_assignment(self):
+        return BinaryOperator.ASSIGN.value <= self.value < BinaryOperator.COMMA.value
+
+    def __repr__(self):
+        return 'BinaryOperator.%s' % (self.name,)
+
+
+BinaryOperator.INVALID = BinaryOperator(0)
+BinaryOperator.PTRMEMD = BinaryOperator(1)
+BinaryOperator.PTRMEMI = BinaryOperator(2)
+BinaryOperator.MUL = BinaryOperator(3)
+BinaryOperator.DIV = BinaryOperator(4)
+BinaryOperator.REM = BinaryOperator(5)
+BinaryOperator.ADD = BinaryOperator(6)
+BinaryOperator.SUB = BinaryOperator(7)
+BinaryOperator.SHL = BinaryOperator(8)
+BinaryOperator.SHR = BinaryOperator(9)
+BinaryOperator.LT = BinaryOperator(10)
+BinaryOperator.GT = BinaryOperator(11)
+BinaryOperator.LE = BinaryOperator(12)
+BinaryOperator.GE = BinaryOperator(13)
+BinaryOperator.EQ = BinaryOperator(14)
+BinaryOperator.NE = BinaryOperator(15)
+BinaryOperator.AND = BinaryOperator(16)
+BinaryOperator.XOR = BinaryOperator(17)
+BinaryOperator.OR = BinaryOperator(18)
+BinaryOperator.LAND = BinaryOperator(19)
+BinaryOperator.LOR = BinaryOperator(20)
+BinaryOperator.ASSIGN = BinaryOperator(21)
+BinaryOperator.MULASSIGN = BinaryOperator(22)
+BinaryOperator.DIVASSIGN = BinaryOperator(23)
+BinaryOperator.REMASSIGN = BinaryOperator(24)
+BinaryOperator.ADDASSIGN = BinaryOperator(25)
+BinaryOperator.SUBASSIGN = BinaryOperator(26)
+BinaryOperator.SHLASSIGN = BinaryOperator(27)
+BinaryOperator.SHRASSIGN = BinaryOperator(28)
+BinaryOperator.ANDASSIGN = BinaryOperator(29)
+BinaryOperator.XORASSIGN = BinaryOperator(30)
+BinaryOperator.ORASSIGN = BinaryOperator(31)
+BinaryOperator.COMMA = BinaryOperator(32)
+BinaryOperator.UNKNOWN = BinaryOperator(33)
 
 
 ### C++ access specifiers ###
@@ -3222,6 +3368,26 @@ functionList = [
         _CXString,
         _CXString.from_result
     ),
+    (
+        "clang_Cursor_getLiteralString",
+        [Cursor],
+        _CXString,
+        _CXString.from_result
+    ),
+    (
+        "clang_Cursor_getOperatorString",
+        [Cursor],
+        _CXString,
+        _CXString.from_result
+    ),
+    (
+        "clang_Cursor_getUnaryOpcode",
+        [Cursor],
+    ),
+    (
+        "clang_Cursor_getBinaryOpcode",
+        [Cursor],
+    ),
     # (
     #     "clang_getCXTUResourceUsage",
     #     [TranslationUnit],
@@ -3810,10 +3976,17 @@ class Config:
 
     @CachedProperty
     def lib(self):
-        lib = self.get_cindex_library()
-        register_functions(lib, not Config.compatibility_check)
+        clang_lib = self.get_cindex_library()
+        register_functions(clang_lib, not Config.compatibility_check)
         Config.loaded = True
-        return lib
+        return clang_lib
+
+    @CachedProperty
+    def sealang(self):
+        import sealang
+        sealang_lib = cdll.LoadLibrary(sealang.__file__)
+        register_functions(sealang_lib, not Config.compatibility_check)
+        return sealang_lib
 
     def get_filename(self):
         if Config.library_file:
