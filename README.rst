@@ -1,6 +1,9 @@
 Sealang
 =======
 
+.. image:: https://travis-ci.org/pybee/seasnake.svg?branch=master
+    :target: https://travis-ci.org/pybee/seasnake
+
 Sealang is an improved set of Python bindings for ``libclang``.
 
 The upstream maintainers of ``libclang`` have not been especially responsive
@@ -29,7 +32,7 @@ OS X
 
 Although OS X provides Clang, it doesn't provide all the development headers, so you'll need to . `Homebrew`_ is the easiest way to do this. Once you've got Homebrew installed, you can run::
 
-    $ brew install llvm --with-clang --with-asan --HEAD
+    $ brew install llvm --with-clang --with-asan
 
 to get a working install of llvm with clang.
 
@@ -37,9 +40,27 @@ to get a working install of llvm with clang.
 
 Then, you'll need to set the following environment variables::
 
-    $ CFLAGS=`/usr/local/opt/llvm/bin/llvm-config --cxxflags`
-    $ LDFLAGS=`/usr/local/opt/llvm/bin/llvm-config --ldflags`
-    $ DYLD_LIBRARY_PATH=`/usr/local/opt/llvm/bin/llvm-config --libdir`
+    $ export LLVM_HOME=/usr/local/opt/llvm
+    $ export DYLD_LIBRARY_PATH=$LLVM_HOME/lib
+
+Lastly, you can install Sealang::
+
+    $ pip install sealang
+
+Ubuntu 14.04 (Trusty)
+~~~~~~~~~~~~~~~~~~~~~
+
+To compile under Ubuntu 14.04 (Trusty), you'll need to get an updated version of LLVM::
+
+  $ curl http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
+  $ echo "deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.7 main" | sudo tee -a /etc/apt/sources.list
+  $ sudo apt-get update -y
+  $ sudo apt-get install libclang-3.7-dev llvm-3.7-dev -y
+
+Then, you'll need to set the following environment variables.
+
+    $ export LLVM_HOME=/usr/lib/llvm-3.7
+    $ export LD_LIBRARY_PATH=$LLVM_HOME/lib
 
 Lastly, you can install Sealang::
 
@@ -48,8 +69,7 @@ Lastly, you can install Sealang::
 Other platforms
 ~~~~~~~~~~~~~~~
 
-There's nothing OS X specific about Sealang; the instructions for those platforms should be analogous to the OS X instructions. If you develop build instructions for
-a platform, please `submit a pull request`_.
+The instructions for installing on other platforms should be analogous. If you develop build instructions for a platform, please `submit a pull request`_.
 
 Usage
 -----
