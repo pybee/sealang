@@ -40,7 +40,6 @@ namespace clang {
     }
 
     namespace cxstring {
-
         CXString createEmpty() {
             CXString str;
             str.data = "";

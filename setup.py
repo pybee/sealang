@@ -49,7 +49,7 @@ try:
                 'sealang',
                 sources=['sealang/sealang.cpp'],
                 libraries=[
-                    'clangAST', 'clangBasic', 'clangLex', 'LLVMSupport',
+                    'clangAST', 'clangLex', 'clangBasic', 'LLVMSupport',
                     'm', 'z', 'pthread', 'curses'
                 ],
                 extra_compile_args=llvm_cflags,
