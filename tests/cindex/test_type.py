@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+from nose.tools import nottest
+
 import gc
 
 from clang.cindex import CursorKind
@@ -385,6 +387,7 @@ struct a {
         assert fields[3].is_bitfield() is False
 
 
+@nottest
 def test_offset():
     """Ensure Cursor.get_record_field_offset works in anonymous records"""
     source = """

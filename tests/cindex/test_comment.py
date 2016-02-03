@@ -30,13 +30,13 @@ void f() {
     brief = test1.brief_comment
     assert raw == b"""/// Aaa."""
     assert brief == b"""Aaa."""
-    
+
     test2 = get_cursor(tu, 'test2')
     raw = test2.raw_comment
     brief = test2.brief_comment
     assert raw == b"""/// Bbb.\n/// x"""
     assert brief == b"""Bbb. x"""
-    
+
     f = get_cursor(tu, 'f')
     raw = f.raw_comment
     brief = f.brief_comment

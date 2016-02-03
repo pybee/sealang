@@ -1695,9 +1695,12 @@ class UnaryOperator(BaseEnumeration):
     _kinds = []
     _name_map = None
 
-    def __nonzero__(self):
+    def __bool__(self):
         """ Allows checks of the kind ```if cursor.binary_operator:```"""
-        return self.value != 0
+        return self.value != 99999
+
+    # Python 2 compatibility
+    __nonzero__ = __bool__
 
     @property
     def is_postfix(self):
@@ -1709,31 +1712,28 @@ class UnaryOperator(BaseEnumeration):
     @property
     def is_prefix(self):
         return self.value not in (
-            UnaryOperator.INVALID,
             UnaryOperator.POSTINC.value,
             UnaryOperator.POSTDEC.value,
-            UnaryOperator.UNKNOWN
         )
 
     def __repr__(self):
         return 'UnaryOperator.%s' % (self.name,)
 
 
-UnaryOperator.INVALID = UnaryOperator(0)
-UnaryOperator.POSTINC = UnaryOperator(1)
-UnaryOperator.POSTDEC = UnaryOperator(2)
-UnaryOperator.PREINC = UnaryOperator(3)
-UnaryOperator.PREDEC = UnaryOperator(4)
-UnaryOperator.ADDROF = UnaryOperator(5)
-UnaryOperator.DEREF = UnaryOperator(6)
-UnaryOperator.PLUS = UnaryOperator(7)
-UnaryOperator.MINUS = UnaryOperator(8)
-UnaryOperator.NOT = UnaryOperator(9)
-UnaryOperator.LNOT = UnaryOperator(10)
-UnaryOperator.REAL = UnaryOperator(11)
-UnaryOperator.IMAG = UnaryOperator(12)
-UnaryOperator.EXTENSION = UnaryOperator(13)
-UnaryOperator.UNKNOWN = UnaryOperator(14)
+UnaryOperator.POSTINC = UnaryOperator(0)
+UnaryOperator.POSTDEC = UnaryOperator(1)
+UnaryOperator.PREINC = UnaryOperator(2)
+UnaryOperator.PREDEC = UnaryOperator(3)
+UnaryOperator.ADDROF = UnaryOperator(4)
+UnaryOperator.DEREF = UnaryOperator(5)
+UnaryOperator.PLUS = UnaryOperator(6)
+UnaryOperator.MINUS = UnaryOperator(7)
+UnaryOperator.NOT = UnaryOperator(8)
+UnaryOperator.LNOT = UnaryOperator(9)
+UnaryOperator.REAL = UnaryOperator(10)
+UnaryOperator.IMAG = UnaryOperator(11)
+UnaryOperator.EXTENSION = UnaryOperator(12)
+UnaryOperator.UNKNOWN = UnaryOperator(99999)
 
 
 class BinaryOperator(BaseEnumeration):
@@ -1745,9 +1745,12 @@ class BinaryOperator(BaseEnumeration):
     _kinds = []
     _name_map = None
 
-    def __nonzero__(self):
+    def __bool__(self):
         """ Allows checks of the kind ```if cursor.binary_operator:```"""
-        return self.value != 0
+        return self.value != 99999
+
+    # Python 2 compatibility
+    __nonzero__ = __bool__
 
     @property
     def is_assignment(self):
@@ -1757,40 +1760,39 @@ class BinaryOperator(BaseEnumeration):
         return 'BinaryOperator.%s' % (self.name,)
 
 
-BinaryOperator.INVALID = BinaryOperator(0)
-BinaryOperator.PTRMEMD = BinaryOperator(1)
-BinaryOperator.PTRMEMI = BinaryOperator(2)
-BinaryOperator.MUL = BinaryOperator(3)
-BinaryOperator.DIV = BinaryOperator(4)
-BinaryOperator.REM = BinaryOperator(5)
-BinaryOperator.ADD = BinaryOperator(6)
-BinaryOperator.SUB = BinaryOperator(7)
-BinaryOperator.SHL = BinaryOperator(8)
-BinaryOperator.SHR = BinaryOperator(9)
-BinaryOperator.LT = BinaryOperator(10)
-BinaryOperator.GT = BinaryOperator(11)
-BinaryOperator.LE = BinaryOperator(12)
-BinaryOperator.GE = BinaryOperator(13)
-BinaryOperator.EQ = BinaryOperator(14)
-BinaryOperator.NE = BinaryOperator(15)
-BinaryOperator.AND = BinaryOperator(16)
-BinaryOperator.XOR = BinaryOperator(17)
-BinaryOperator.OR = BinaryOperator(18)
-BinaryOperator.LAND = BinaryOperator(19)
-BinaryOperator.LOR = BinaryOperator(20)
-BinaryOperator.ASSIGN = BinaryOperator(21)
-BinaryOperator.MULASSIGN = BinaryOperator(22)
-BinaryOperator.DIVASSIGN = BinaryOperator(23)
-BinaryOperator.REMASSIGN = BinaryOperator(24)
-BinaryOperator.ADDASSIGN = BinaryOperator(25)
-BinaryOperator.SUBASSIGN = BinaryOperator(26)
-BinaryOperator.SHLASSIGN = BinaryOperator(27)
-BinaryOperator.SHRASSIGN = BinaryOperator(28)
-BinaryOperator.ANDASSIGN = BinaryOperator(29)
-BinaryOperator.XORASSIGN = BinaryOperator(30)
-BinaryOperator.ORASSIGN = BinaryOperator(31)
-BinaryOperator.COMMA = BinaryOperator(32)
-BinaryOperator.UNKNOWN = BinaryOperator(33)
+BinaryOperator.PTRMEMD = BinaryOperator(0)
+BinaryOperator.PTRMEMI = BinaryOperator(1)
+BinaryOperator.MUL = BinaryOperator(2)
+BinaryOperator.DIV = BinaryOperator(3)
+BinaryOperator.REM = BinaryOperator(4)
+BinaryOperator.ADD = BinaryOperator(5)
+BinaryOperator.SUB = BinaryOperator(6)
+BinaryOperator.SHL = BinaryOperator(7)
+BinaryOperator.SHR = BinaryOperator(8)
+BinaryOperator.LT = BinaryOperator(9)
+BinaryOperator.GT = BinaryOperator(10)
+BinaryOperator.LE = BinaryOperator(11)
+BinaryOperator.GE = BinaryOperator(12)
+BinaryOperator.EQ = BinaryOperator(13)
+BinaryOperator.NE = BinaryOperator(14)
+BinaryOperator.AND = BinaryOperator(15)
+BinaryOperator.XOR = BinaryOperator(16)
+BinaryOperator.OR = BinaryOperator(17)
+BinaryOperator.LAND = BinaryOperator(18)
+BinaryOperator.LOR = BinaryOperator(19)
+BinaryOperator.ASSIGN = BinaryOperator(20)
+BinaryOperator.MULASSIGN = BinaryOperator(21)
+BinaryOperator.DIVASSIGN = BinaryOperator(22)
+BinaryOperator.REMASSIGN = BinaryOperator(23)
+BinaryOperator.ADDASSIGN = BinaryOperator(24)
+BinaryOperator.SUBASSIGN = BinaryOperator(25)
+BinaryOperator.SHLASSIGN = BinaryOperator(26)
+BinaryOperator.SHRASSIGN = BinaryOperator(27)
+BinaryOperator.ANDASSIGN = BinaryOperator(28)
+BinaryOperator.XORASSIGN = BinaryOperator(29)
+BinaryOperator.ORASSIGN = BinaryOperator(30)
+BinaryOperator.COMMA = BinaryOperator(31)
+BinaryOperator.UNKNOWN = BinaryOperator(99999)
 
 
 ### C++ access specifiers ###

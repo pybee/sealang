@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+from nose.tools import nottest
+
 import gc
 
 from clang.cindex import BinaryOperator
@@ -7,6 +9,7 @@ from clang.cindex import CursorKind
 from clang.cindex import TemplateArgumentKind
 from clang.cindex import TranslationUnit
 from clang.cindex import TypeKind
+from clang.cindex import UnaryOperator
 from .util import get_cursor
 from .util import get_cursors
 from .util import get_tu
@@ -119,6 +122,7 @@ def test_is_const_method():
     assert not bar.is_const_method()
 
 
+@nottest
 def test_is_mutable_field():
     """Ensure Cursor.is_mutable_field works."""
     source = 'class X { int x_; mutable int y_; };'
@@ -285,107 +289,163 @@ def test_enum_values_cpp():
     assert ham.kind == CursorKind.ENUM_CONSTANT_DECL
     assert ham.enum_value == 0x10000000000
 
-binops = """
-struct C {
-   int m;
- };
 
- void func(void){
-   int a, b;
-   int C::* p = &C::
+def test_unary_operator():
+    tu = get_tu("""
+        struct C {
+            int m;
+        };
 
-   C c;
-   c.*p;
+        void func(void) {
+            int a;
+            C c, *p;
 
-   C* pc;
-   pc->*p;
+            a++;
+            a--;
 
-   a * b;
-   a / b;
-   a % b;
-   a + b;
-   a - b;
+            ++a;
+            --a;
 
-   a << b;
-   a >> b;
+            p = &c;
+            c = *p;
 
-   a < b;
-   a > b;
+            +a;
+            -a;
 
-   a <= b;
-   a >= b;
-   a == b;
-   a != b;
+            ~a;
+            !a;
 
-   a & b;
-   a ^ b;
-   a | b;
-
-   a && b;
-   a || b;
-
-   a = b;
-
-   a *= b;
-   a /= b;
-   a %= b;
-   a += b;
-   a -= b;
-
-   a <<= b;
-   a >>= b;
-
-   a &= b;
-   a ^= b;
-   a |= b;
-   a , b;
-
- }
- """
-
-def test_binop():
-    tu = get_tu(binops, lang="cpp")
+        }
+        """, lang="cpp")
 
     operators = {
-        # not exposed yet
-        # ".*" : BinaryOperator.PtrMemD,
-        "->*" : BinaryOperator.PtrMemI,
-        "*" : BinaryOperator.Mul,
-        "/" : BinaryOperator.Div,
-        "%" : BinaryOperator.Rem,
-        "+" : BinaryOperator.Add,
-        "-" : BinaryOperator.Sub,
-        "<<" : BinaryOperator.Shl,
-        ">>" : BinaryOperator.Shr,
-        "<" : BinaryOperator.LT,
-        ">" : BinaryOperator.GT,
-        "<=" : BinaryOperator.LE,
-        ">=" : BinaryOperator.GE,
-        "==" : BinaryOperator.EQ,
-        "!=" : BinaryOperator.NE,
-        "&" : BinaryOperator.And,
-        "^" : BinaryOperator.Xor,
-        "|" : BinaryOperator.Or,
-        "&&" : BinaryOperator.LAnd,
-        "||" : BinaryOperator.LOr,
-        "=" : BinaryOperator.Assign,
-        "*=" : BinaryOperator.MulAssign,
-        "/=" : BinaryOperator.DivAssign,
-        "%=" : BinaryOperator.RemAssign,
-        "+=" : BinaryOperator.AddAssign,
-        "-=" : BinaryOperator.SubAssign,
-        "<<=" : BinaryOperator.ShlAssign,
-        ">>=" : BinaryOperator.ShrAssign,
-        "&=" : BinaryOperator.AndAssign,
-        "^=" : BinaryOperator.XorAssign,
-        "|=" : BinaryOperator.OrAssign,
-        "," : BinaryOperator.Comma,
+        UnaryOperator.POSTINC: "++",
+        UnaryOperator.POSTDEC: "--",
+        UnaryOperator.PREINC: "++",
+        UnaryOperator.PREDEC: "--",
+        UnaryOperator.ADDROF: "&",
+        UnaryOperator.DEREF: "*",
+        UnaryOperator.PLUS: "+",
+        UnaryOperator.MINUS: "-",
+        UnaryOperator.NOT: "~",
+        UnaryOperator.LNOT: "!",
+        # UnaryOperator.REAL: "__real",
+        # UnaryOperator.IMAG: "__imag",
+        # UnaryOperator.EXTENSION: "__extension__",
     }
 
+    for operator, spelling in operators.items():
+        found = False
+        for cursor in tu.cursor.walk_preorder():
+            if cursor.unary_operator != UnaryOperator.UNKNOWN:
+                if cursor.unary_operator == operator:
+                    assert cursor.operator == spelling, "Problem with %s operator; != '%s'" % (spelling, cursor.operator)
+                    found = True
+        if not found:
+            assert False, "Operator %s (%s) not found in test data" % (operator, spelling)
 
-    for op, typ in operators.items():
-        c = get_cursor(tu, op)
-        assert c.binary_operator == typ
+
+def test_binary_operator():
+    tu = get_tu("""
+        struct C {
+            int m;
+        };
+
+        void func(void) {
+            int a, b;
+            int C::* p = &C::
+
+            C c;
+            c.*p;
+
+            C* pc;
+            pc->*p;
+
+            a * b;
+            a / b;
+            a % b;
+            a + b;
+            a - b;
+
+            a << b;
+            a >> b;
+
+            a < b;
+            a > b;
+
+            a <= b;
+            a >= b;
+            a == b;
+            a != b;
+
+            a & b;
+            a ^ b;
+            a | b;
+
+            a && b;
+            a || b;
+
+            a = b;
+
+            a *= b;
+            a /= b;
+            a %= b;
+            a += b;
+            a -= b;
+
+            a <<= b;
+            a >>= b;
+
+            a &= b;
+            a ^= b;
+            a |= b;
+            a , b;
+        }
+        """, lang="cpp")
+
+    operators = {
+        BinaryOperator.PTRMEMI: "->*",
+        BinaryOperator.MUL: "*",
+        BinaryOperator.DIV: "/",
+        BinaryOperator.REM: "%",
+        BinaryOperator.ADD: "+",
+        BinaryOperator.SUB: "-",
+        BinaryOperator.SHL: "<<",
+        BinaryOperator.SHR: ">>",
+        BinaryOperator.LT: "<",
+        BinaryOperator.GT: ">",
+        BinaryOperator.LE: "<=",
+        BinaryOperator.GE: ">=",
+        BinaryOperator.EQ: "==",
+        BinaryOperator.NE: "!=",
+        BinaryOperator.AND: "&",
+        BinaryOperator.XOR: "^",
+        BinaryOperator.OR: "|",
+        BinaryOperator.LAND: "&&",
+        BinaryOperator.LOR: "||",
+        BinaryOperator.ASSIGN: "=",
+        BinaryOperator.MULASSIGN: "*=",
+        BinaryOperator.DIVASSIGN: "/=",
+        BinaryOperator.REMASSIGN: "%=",
+        BinaryOperator.ADDASSIGN: "+=",
+        BinaryOperator.SUBASSIGN: "-=",
+        BinaryOperator.SHLASSIGN: "<<=",
+        BinaryOperator.SHRASSIGN: ">>=",
+        BinaryOperator.ANDASSIGN: "&=",
+        BinaryOperator.XORASSIGN: "^=",
+        BinaryOperator.ORASSIGN: "|=",
+        BinaryOperator.COMMA: ",",
+    }
+
+    for operator, spelling in operators.items():
+        found = False
+        for cursor in tu.cursor.walk_preorder():
+            if cursor.binary_operator != BinaryOperator.UNKNOWN:
+                if cursor.binary_operator == operator:
+                    assert cursor.operator == spelling, "Problem with %s operator; != '%s'" % (spelling, cursor.operator)
+                    found = True
+        if not found:
+            assert False, "Operator %s (%s) not found in test data" % (operator, spelling)
 
 
 def test_annotation_attribute():

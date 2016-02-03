@@ -42,20 +42,20 @@ namespace clang {
     namespace cxstring {
 
         CXString createEmpty() {
-            CXString Str;
-            Str.data = "";
-            Str.private_flags = CXS_Unmanaged;
-            return Str;
+            CXString str;
+            str.data = "";
+            str.private_flags = CXS_Unmanaged;
+            return str;
         }
 
-        CXString createDup(StringRef String) {
-            CXString Result;
-            char *Spelling = static_cast<char *>(malloc(String.size() + 1));
-            memmove(Spelling, String.data(), String.size());
-            Spelling[String.size()] = 0;
-            Result.data = Spelling;
-            Result.private_flags = (unsigned) CXS_Malloc;
-            return Result;
+        CXString createDup(StringRef string) {
+            CXString result;
+            char *spelling = static_cast<char *>(malloc(string.size() + 1));
+            memmove(spelling, string.data(), string.size());
+            spelling[string.size()] = 0;
+            result.data = spelling;
+            result.private_flags = (unsigned) CXS_Malloc;
+            return result;
         }
 
     }
@@ -88,29 +88,29 @@ CXString clang_Cursor_getOperatorString(CXCursor cursor)
     return clang::cxstring::createEmpty();
 }
 
-CXBinaryOpcode clang_Cursor_getBinaryOpcode(CXCursor cursor)
+clang::BinaryOperatorKind clang_Cursor_getBinaryOpcode(CXCursor cursor)
 {
     if (cursor.kind == CXCursor_BinaryOperator) {
         clang::BinaryOperator *op = (clang::BinaryOperator *) clang::getCursorExpr(cursor);
-        return static_cast<CXBinaryOpcode>(op->getOpcode());
+        return static_cast<clang::BinaryOperatorKind>(op->getOpcode());
     }
 
     if (cursor.kind == CXCursor_CompoundAssignOperator) {
         clang::CompoundAssignOperator *op = (clang::CompoundAssignOperator *) clang::getCursorExpr(cursor);
-        return static_cast<CXBinaryOpcode>(op->getOpcode());
+        return static_cast<clang::BinaryOperatorKind>(op->getOpcode());
     }
 
-    return BO_Unknown;
+    return (clang::BinaryOperatorKind) 99999;
 }
 
-CXUnaryOpcode clang_Cursor_getUnaryOpcode(CXCursor cursor)
+clang::UnaryOperatorKind clang_Cursor_getUnaryOpcode(CXCursor cursor)
 {
     if (cursor.kind == CXCursor_UnaryOperator) {
         clang::UnaryOperator *op = (clang::UnaryOperator*) clang::getCursorExpr(cursor);
-        return static_cast<CXUnaryOpcode>(op->getOpcode());
+        return static_cast<clang::UnaryOperatorKind>(op->getOpcode());
     }
 
-    return UO_Unknown;
+    return (clang::UnaryOperatorKind) 99999;
 }
 
 CXString clang_Cursor_getLiteralString(CXCursor cursor)
@@ -122,9 +122,13 @@ CXString clang_Cursor_getLiteralString(CXCursor cursor)
 
     if (cursor.kind == CXCursor_FloatingLiteral) {
         clang::FloatingLiteral *floatLiteral = (clang::FloatingLiteral *) clang::getCursorExpr(cursor);
-        llvm::SmallString<1024> str;
+        // This is the code needed in clang 3.9
+        // llvm::SmallString<1024> str;
+        // floatLiteral->getValue().toString(str);
+        // return clang::cxstring::createDup(str.c_str());
+        llvm::SmallVector<char, 1024> str;
         floatLiteral->getValue().toString(str);
-        return clang::cxstring::createDup(str.c_str());
+        return clang::cxstring::createDup(str.data());
     }
 
     if (cursor.kind == CXCursor_CharacterLiteral) {
@@ -207,15 +211,30 @@ static PyMethodDef methods[] = {
     {NULL, NULL, 0, NULL}
 };
 
+#if PY_MAJOR_VERSION <= 2
+
+PyMODINIT_FUNC initsealang()
+{
+    (void) Py_InitModule("sealang", methods);
+}
+
+#else
+
 static struct PyModuleDef sealangmodule = {
     PyModuleDef_HEAD_INIT,
     "sealang",
     NULL,
     -1,
-    methods
+    methods,
+    NULL,
+    NULL,
+    NULL,
+    NULL
 };
 
 PyMODINIT_FUNC PyInit_sealang()
 {
     return PyModule_Create(&sealangmodule);
 }
+
+#endif
