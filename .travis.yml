@@ -8,7 +8,7 @@ python:
 env:
   global:
      - LD_LIBRARY_PATH=/usr/lib/llvm-3.7/lib
-     - CFLAGS="-I/usr/lib/llvm-3.7/include -DNDEBUG -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -g -O2 -fomit-frame-pointer -fPIC"
+     - CFLAGS="-I/usr/lib/llvm-3.7/include -DNDEBUG -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -g -O2 -fomit-frame-pointer -std=c++11 -fvisibility-inlines-hidden -fno-execptions -fPIC -ffunction-sections -fdata-sections -Wcast-qual"
      - LDFLAGS=-L/usr/lib/llvm-3.7/lib
 before_install:
   - curl http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
