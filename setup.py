@@ -60,17 +60,17 @@ try:
 
 except KeyError:
     print("Unable to set up build environment. Have you installed LLVM and set LLVM_HOME?")
-    print()
-    sysname = os.uname().sysname
+    print('')
     if platform.system() == 'Darwin':
         print("Using homebrew:")
         print("    brew install llvm --with-clang --with-asan")
-        print("    export LLVM_HOME=/usr/lib/opt/llvm")
-        print()
+        print("    export LLVM_HOME=/usr/local/opt/llvm")
+        print("    export DYLD_LIBRARY_PATH=$LLVM_HOME/lib")
     elif platform.dist()[0] == 'Ubuntu':
         print("    curl http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -")
         print("    echo \"deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.7 main\" | sudo tee -a /etc/apt/sources.list")
         print("    sudo apt-get update -y")
         print("    sudo apt-get install libclang-3.7-dev llvm-3.7-dev -y")
         print("    export LLVM_HOME=/usr/lib/opt/llvm")
-    print()
+        print("    export LD_LIBRARY_PATH=$LLVM_HOME/lib")
+    print('')
