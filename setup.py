@@ -20,7 +20,7 @@ try:
 
     setup(
         name='sealang',
-        version='3.9.dev259721',
+        version='3.9.dev259750',
         description='An extended set of Python bindings for libclang',
         long_description=open('README.rst').read(),
         url='http://github.com/pybee/sealang',
@@ -71,10 +71,7 @@ except KeyError:
         print("    export LLVM_HOME=/usr/local/opt/llvm")
         print("    export DYLD_LIBRARY_PATH=$LLVM_HOME/lib")
     elif platform.dist()[0] == 'Ubuntu':
-        print("    curl http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -")
-        print("    echo \"deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.7 main\" | sudo tee -a /etc/apt/sources.list")
-        print("    sudo apt-get update -y")
-        print("    sudo apt-get install libclang-3.7-dev llvm-3.7-dev -y")
-        print("    export LLVM_HOME=/usr/lib/opt/llvm")
+        print("    sudo apt-get install libclang-3.6 clang-3.6 -y")
+        print("    export LLVM_HOME=/usr/lib/llvm-3.6")
         print("    export LD_LIBRARY_PATH=$LLVM_HOME/lib")
     print('')
