@@ -12,5 +12,7 @@ env:
 before_install:
   - sudo apt-get update -y
   - sudo apt-get install libclang-3.6 clang-3.6 -y
+install:
+  - pip install .
 script:
   - python setup.py test
