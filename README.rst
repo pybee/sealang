@@ -1,8 +1,8 @@
 Sealang
 =======
 
-.. image:: https://travis-ci.org/pybee/seasnake.svg?branch=master
-    :target: https://travis-ci.org/pybee/seasnake
+.. image:: https://travis-ci.org/pybee/sealang.svg?branch=master
+    :target: https://travis-ci.org/pybee/sealang
 
 Sealang is an improved set of Python bindings for ``libclang``.
 
@@ -58,7 +58,7 @@ of LLVM::
 
     $ sudo apt-get install libclang-3.6 clang-3.6 -y
 
-Then, you'll need to set the following environment variables.
+Then, you'll need to set the following environment variables::
 
     $ export LLVM_HOME=/usr/lib/llvm-3.6
     $ export LD_LIBRARY_PATH=$LLVM_HOME/lib
@@ -178,11 +178,13 @@ Community
 
 Sealang is part of the `BeeWare suite`_. You can talk to the community through:
 
- * `@pybeeware on Twitter`_
+* `@pybeeware on Twitter`_
 
- * The `BeeWare Users Mailing list`_, for questions about how to use the BeeWare suite.
+* The `BeeWare Users Mailing list`_, for questions about how to use the
+  BeeWare suite.
 
- * The `BeeWare Developers Mailing list`_, for discussing the development of new features in the BeeWare suite, and ideas for new tools for the suite.
+* The `BeeWare Developers Mailing list`_, for discussing the development of
+  new features in the BeeWare suite, and ideas for new tools for the suite.
 
 Contributing
 ------------
