@@ -464,11 +464,11 @@ def test_literals():
         """, lang="cpp")
 
     literals = {
-        CursorKind.INTEGER_LITERAL: b'37',
-        CursorKind.FLOATING_LITERAL: b'99.5',
-        CursorKind.CHARACTER_LITERAL: b'q',
-        CursorKind.STRING_LITERAL: b'Hello, World',
-        CursorKind.CXX_BOOL_LITERAL_EXPR: b'true'
+        CursorKind.INTEGER_LITERAL: '37',
+        CursorKind.FLOATING_LITERAL: '99.5',
+        CursorKind.CHARACTER_LITERAL: 'q',
+        CursorKind.STRING_LITERAL: 'Hello, World',
+        CursorKind.CXX_BOOL_LITERAL_EXPR: 'true'
     }
 
     for literal, spelling in literals.items():
