@@ -3,6 +3,7 @@
 #include "clang/AST/Stmt.h"
 #include "clang/AST/Expr.h"
 #include "clang/AST/ExprCXX.h"
+#include "llvm/ADT/SmallString.h"
 
 /************************************************************************
  * Duplicated libclang functionality
@@ -121,13 +122,9 @@ CXString clang_Cursor_getLiteralString(CXCursor cursor)
 
     if (cursor.kind == CXCursor_FloatingLiteral) {
         clang::FloatingLiteral *floatLiteral = (clang::FloatingLiteral *) clang::getCursorExpr(cursor);
-        // This is the code needed in clang 3.9
-        // llvm::SmallString<1024> str;
-        // floatLiteral->getValue().toString(str);
-        // return clang::cxstring::createDup(str.c_str());
-        llvm::SmallVector<char, 1024> str;
+        llvm::SmallString<1024> str;
         floatLiteral->getValue().toString(str);
-        return clang::cxstring::createDup(str.data());
+        return clang::cxstring::createDup(str.c_str());
     }
 
     if (cursor.kind == CXCursor_CharacterLiteral) {

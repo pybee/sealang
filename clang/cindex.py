@@ -1324,7 +1324,7 @@ class Cursor(Structure):
         Retrieves the literal at this cursor
         """
         if not hasattr(self, '_literal'):
-            self._literal = conf.sealang.clang_Cursor_getLiteralString(self).decode('utf-8')
+            self._literal = conf.sealang.clang_Cursor_getLiteralString(self)
 
         return self._literal
 

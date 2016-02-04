@@ -169,6 +169,16 @@ aren't exposed as symbols for third-party use.
 All this functionality is potentially a candidate to be passed upstream to
 libclang.
 
+Relationship to Clang
+~~~~~~~~~~~~~~~~~~~~~
+
+This project aims to mirror what is currently available in the Python bindings
+to ``libclang``. The version number for this project is drawn from the version
+and SVN revision of the official clang repository.
+
+Any changes made upstream to ``libclang`` will be mirrored here; any changes
+made here will, where possible, be pushed upstream to ``libclang``.
+
 Community
 ---------
 

@@ -20,7 +20,7 @@ try:
 
     setup(
         name='sealang',
-        version='3.9.dev258341',
+        version='3.9.dev259721',
         description='An extended set of Python bindings for libclang',
         long_description=open('README.rst').read(),
         url='http://github.com/pybee/sealang',

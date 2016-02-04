@@ -448,6 +448,39 @@ def test_binary_operator():
             assert False, "Operator %s (%s) not found in test data" % (operator, spelling)
 
 
+def test_literals():
+    tu = get_tu("""
+        struct C {
+            int m;
+        };
+
+        void func(void) {
+            int intLiteral = 37;
+            float floatLiteral = 99.5;
+            char charLiteral = 'q';
+            char *stringLiteral = "Hello, World";
+            bool boolLiteral = true;
+        }
+        """, lang="cpp")
+
+    literals = {
+        CursorKind.INTEGER_LITERAL: b'37',
+        CursorKind.FLOATING_LITERAL: b'99.5',
+        CursorKind.CHARACTER_LITERAL: b'q',
+        CursorKind.STRING_LITERAL: b'Hello, World',
+        CursorKind.CXX_BOOL_LITERAL_EXPR: b'true'
+    }
+
+    for literal, spelling in literals.items():
+        found = False
+        for cursor in tu.cursor.walk_preorder():
+            if cursor.kind == literal:
+                assert cursor.literal == spelling, "Problem with %s; %s != %s" % (literal, cursor.literal, spelling)
+                found = True
+        if not found:
+            assert False, "%s '%s' not found in test data" % (literal, spelling)
+
+
 def test_annotation_attribute():
     tu = get_tu('int foo (void) __attribute__ ((annotate("here be annotation attribute")));')
 
