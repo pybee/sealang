@@ -15,10 +15,6 @@ This package is a fork of the official Python bindings for ``libclang``, patched
 Installation
 ------------
 
-Sealang works by providing a C module (``sealang.so``) that adds C interfaces
-for useful operations on the LLVM AST. This C module is then accessed using
-``ctypes`` to provide Python bindings.
-
 To compile Sealang, you'll need to:
 
 1. Install LLVM (with clang)
