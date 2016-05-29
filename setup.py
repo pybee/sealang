@@ -57,7 +57,7 @@ try:
             ),
         ],
         # if use nose.collector, many plugins not is avaliable
-        # see: http://nose.readthedocs.org/en/latest/setuptools_integration.html
+        # see: https://nose.readthedocs.io/en/latest/setuptools_integration.html
         test_suite='nose.collector',
         tests_require=['nose']
     )
