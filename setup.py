@@ -56,7 +56,7 @@ try:
                 extra_link_args=llvm_ldflags,
             ),
         ],
-        # if use nose.collector, many plugins not is avaliable
+        # if nose.collector is used, many plugins will not be available
         # see: https://nose.readthedocs.io/en/latest/setuptools_integration.html
         test_suite='nose.collector',
         tests_require=['nose']
