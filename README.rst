@@ -46,13 +46,18 @@ Lastly, you can install Sealang::
 
     $ pip install sealang
 
-Ubuntu 14.04 (Trusty)
+Ubuntu
 ~~~~~~~~~~~~~~~~~~~~~
 
 To compile under Ubuntu 14.04 (Trusty), you'll need to get an updated version
 of LLVM::
 
     $ sudo apt-get install libclang-3.6 clang-3.6 -y
+
+For Ubuntu 16.04 (Xenial), you may also need to install additional dev
+packages::
+
+    $ sudo apt-get install zlib1g-dev libncurses5-dev -y
 
 Then, you'll need to set the following environment variables::
 
